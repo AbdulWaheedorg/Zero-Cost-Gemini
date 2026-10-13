@@ -1,0 +1,47 @@
+name: Bug report
+description: Something is not working as documented
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! **Never paste API keys, admin keys, `.env`, `keys.json`, OAuth tokens or account emails** into an issue.
+        Security problems go through [private vulnerability reporting](https://github.com/AbdulWaheedorg/Zero-Cost-Gemini/security/advisories/new), not here.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Request to reproduce
+      description: A minimal curl command or code snippet (with the key replaced by `sk-agy-REDACTED`).
+      render: shell
+  - type: textarea
+    id: response
+    attributes:
+      label: Response / error body
+      render: json
+  - type: textarea
+    id: logs
+    attributes:
+      label: Server logs
+      description: Relevant lines from `journalctl -u zero-cost-gemini` (redact anything private).
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: v1.0.0
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: OS, Python version, agy version
+      placeholder: Ubuntu 24.04, Python 3.12, agy 1.3.1
+    validations:
+      required: true

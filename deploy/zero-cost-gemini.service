@@ -1,0 +1,29 @@
+# systemd unit for Zero-Cost Gemini.
+# Install: replace YOUR_USER and the paths, then
+#   sudo cp deploy/zero-cost-gemini.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now zero-cost-gemini
+#
+# It runs as YOUR_USER because agy reads that user's sign-in from ~/.gemini/antigravity-cli/.
+
+[Unit]
+Description=Zero-Cost Gemini (OpenAI-compatible gateway for the Antigravity CLI)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=YOUR_USER
+WorkingDirectory=/home/YOUR_USER/Zero-Cost-Gemini
+EnvironmentFile=/home/YOUR_USER/Zero-Cost-Gemini/.env
+# Bind to localhost and put a TLS reverse proxy (deploy/Caddyfile.example) in front.
+ExecStart=/home/YOUR_USER/Zero-Cost-Gemini/venv/bin/uvicorn src.main:app --host 127.0.0.1 --port 8200
+Restart=always
+RestartSec=3
+
+# Hardening that does not get in agy's way
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

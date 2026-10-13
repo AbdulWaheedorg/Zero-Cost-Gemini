@@ -1,0 +1,34 @@
+# Secrets: never commit these
+.env
+.env.*
+!.env.example
+keys.json
+.keys-*
+accounts/
+*.pem
+*.key
+*antigravity-oauth-token*
+
+# Runtime
+.agy-work/
+backups/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,21 @@
+# Caddy reverse proxy with automatic HTTPS (Let's Encrypt).
+# Replace api.example.com with your domain, point its DNS at the server, then:
+#   sudo cp deploy/Caddyfile.example /etc/caddy/Caddyfile && sudo systemctl reload caddy
+
+api.example.com {
+	encode zstd gzip
+
+	reverse_proxy 127.0.0.1:8200 {
+		# Stream tokens to the client immediately (Server-Sent Events).
+		flush_interval -1
+		transport http {
+			read_timeout 15m
+		}
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		-Server
+	}
+}
