@@ -2,6 +2,14 @@
 
 All notable changes are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-10-14
+
+### Fixed
+- A race on client disconnect: cleanup cancelled the stderr reader while the stream could be waiting on it, raising a stray `CancelledError` in the request task. Found by CI; covered by a deterministic regression test.
+
+### Changed
+- Dependabot only raises a minimum version when the current range no longer allows the newest release (`versioning-strategy: increase-if-necessary`).
+
 ## [1.0.0] - 2026-10-14
 
 First public release.
@@ -18,4 +26,5 @@ First public release.
 - Hermetic test suite (~100 tests) with a fake Antigravity CLI, opt-in live tests, and CI on Python 3.11–3.13.
 - Deployment templates for systemd and Caddy, and full documentation.
 
+[1.0.1]: https://github.com/AbdulWaheedorg/Zero-Cost-Gemini/releases/tag/v1.0.1
 [1.0.0]: https://github.com/AbdulWaheedorg/Zero-Cost-Gemini/releases/tag/v1.0.0

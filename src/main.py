@@ -147,7 +147,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Zero-Cost Gemini",
     description="Serves OpenAI chat completions through the Antigravity CLI with multi-account quota rotation.",
-    version="1.0.0",
+    version="1.0.1",
     lifespan=lifespan,
     # No public API explorer or schema: they would map every route (incl. /admin) for attackers.
     docs_url=None,

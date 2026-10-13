@@ -261,3 +261,29 @@ async def test_timeout_kills_cli_child_processes_too(fake, monkeypatch):
             break
         await asyncio.sleep(0.1)
     assert not _pid_alive(child["pid"])
+
+
+async def test_final_stderr_survives_terminate_cancelling_the_drain(fake, monkeypatch):
+    """
+    Regression (seen in CI): on client disconnect, terminate() cancels the stderr
+    drain while the stream may be awaiting it in final_stderr(); that must not
+    surface as a CancelledError.
+    """
+    from src.cli import AgyProcess
+
+    fake.set("account_1", chat="hang")
+    proc = AgyProcess(engine.build_args(MODEL), fake.home("account_1"), engine.stdin_payload("hi"))
+    await proc.__aenter__()
+    try:
+        async def exited():  # pretend agy has exited; its stderr pipe stays open, so the drain stays pending
+            return 0
+
+        monkeypatch.setattr(proc.proc, "wait", exited)
+        waiter = asyncio.create_task(proc.final_stderr(timeout=5))
+        await asyncio.sleep(0.3)
+        assert not waiter.done()  # it is awaiting the drain
+        proc._stderr_task.cancel()  # what terminate() does
+        assert isinstance(await asyncio.wait_for(waiter, 2), str)
+    finally:
+        monkeypatch.undo()
+        await proc.terminate()

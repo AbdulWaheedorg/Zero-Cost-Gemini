@@ -133,10 +133,16 @@ class AgyProcess:
         """
         try:
             await asyncio.wait_for(self.proc.wait(), timeout)
-            if self._stderr_task:
+            if self._stderr_task and not self._stderr_task.done():
                 await asyncio.wait_for(asyncio.shield(self._stderr_task), timeout)
         except asyncio.TimeoutError:
             pass
+        except asyncio.CancelledError:
+            # terminate() (e.g. on client disconnect) cancels the stderr drain while
+            # we may be waiting on it; that just means there is no more stderr.
+            # Only a cancellation of this task itself should propagate.
+            if asyncio.current_task().cancelling():
+                raise
         return self.stderr_tail
 
     async def readline(self, timeout: Optional[float]) -> bytes:
