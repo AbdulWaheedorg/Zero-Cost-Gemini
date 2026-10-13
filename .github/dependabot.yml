@@ -4,6 +4,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # requirements use ">=" ranges; only raise a floor when the range excludes the newest release
+    versioning-strategy: increase-if-necessary
   - package-ecosystem: github-actions
     directory: /
     schedule:
